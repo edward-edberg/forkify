@@ -1,3 +1,11 @@
+import * as model from './model.js';
+import recipeView from './views/recipeView.js';
+
+// import icons from '../img/icons.svg';
+
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 const recipeContainer = document.querySelector('.recipe');
 
 const timeout = function (s) {
@@ -12,5 +20,29 @@ const timeout = function (s) {
 
 ///////////////////////////////////////
 
-const test = 123;
-console.log('test');
+const controlRecipes = async function () {
+  try {
+    const id = window.location.hash.slice(1);
+    console.log(id);
+
+    if (!id) return;
+    recipeView.renderSpinner();
+    // 1 Loading recipe
+    await model.loadRecipe(id);
+    // const { recipe } = model.state;
+    // console.log(recipe);
+    // 2) Rendering recipe
+    recipeView.render(model.state.recipe);
+
+    // recipeContainer.insertAdjacentHTML('beforeend', markup);
+  } catch (err) {
+    alert(err);
+  }
+};
+// showRecipe();
+
+['hashchange', 'load'].forEach(ev =>
+  window.addEventListener(ev, controlRecipes)
+);
+// window.addEventListener('hashchange', showRecipe);
+// window.addEventListener('load', showRecipe);
